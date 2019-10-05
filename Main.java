@@ -17,7 +17,14 @@ public class Main {
         people people_arr = new people();
         people_arr = fileReader("./src/input1.txt");
 
+        //run the solution to see if there is a possible matching
+        boolean solution = Solve(people_arr);
 
+        //Check to see how many solutions there is
+        if (solution == true){
+            int solutioncount = 1;
+
+        }
     }
 
 
@@ -31,7 +38,7 @@ public class Main {
         int row_index = 0;
         int column_index = 0;
 
-        try {
+        try { //pulling in data from the file
             Scanner scanner = new Scanner(new File(file));
             n = scanner.nextInt();
             rows = n;
@@ -76,16 +83,15 @@ public class Main {
 
 
     //Method to solve the preferences array and return the amount of solutions
-    private static int Solve(people preferences) {
-        int solution = 0;
+    private static boolean Solve(people preferences) {
+        boolean solution = false;
+
+
 
         return solution;
     }
-    
+
 }
-
-
-
 
 
 
@@ -149,7 +155,6 @@ class people{
     public void setColumns(int column) {
         this.columns=column;
     }
-
 
     public int[][] getArray() {
         return this.roommates;
