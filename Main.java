@@ -1,3 +1,5 @@
+//Michael Merabi CS482 Project#1
+
 import java.io.*;
 import java.util.*;
 
@@ -10,15 +12,68 @@ public class Main {
         System.out.println("The Stablematching program by Michael Merabi is now starting");
         List<List<Integer>> people_arr = fileReader("./src/input1.txt"); //preference List
 
-        //creating permutations array
-        int[] temp = new int[n];
-        for(int i = 0; i < n; i++ ){
-            temp[i] = i+1;
+        //creating array for permutations calculations
+        int[] perm = new int[n];
+        for(int start=0; start<n ;start++){
+            perm[start]=start+1;
         }
 
-        //takes the permutations array and creates a possible lists of lists
-        List<List<Integer>> permutations = permute(temp);
-        System.out.println(Arrays.toString(permutations.toArray()));
+        //Creating new set
+        Set<Integer> set = new LinkedHashSet<Integer>();
+        for(int k=1;k<=perm.length;k++){
+            set.add(k);
+        }
+
+        ArrayList<List<List<Integer>>> results = new ArrayList<List<List<Integer>>>();
+        compute(set, new ArrayList<List<Integer>>(), results);
+
+        //sanity check
+        System.out.println(Arrays.toString(results.toArray()));
+
+        ArrayList<List<List<Integer>>> stable_results=new ArrayList<List<List<Integer>>>();
+        for (List<List<Integer>> result : results)
+        {
+            boolean stable=true;
+
+            //For each pair in the Integer list
+            for(List<Integer> pair : result){
+
+                //First number in the pair?
+                boolean first=true;
+
+                //For both numbers in the pair
+                for(Integer num:pair){
+
+                    if(first){
+                        int bleh=pair.get(1);
+                        if(people_arr[pair.get(0)].isLast(bleh)){
+                            stable=false;
+                        }
+                        first=false;
+                    }
+                    else{
+                        int bleh=pair.get(0);
+                        if(people_array[pair.get(1)].isLast(bleh)){
+                            stable=false;
+                        }
+                        else{
+                            ;
+                        }
+                    }
+
+                }
+            }
+
+            //If the result is stable, add to the count
+            if(stable){
+
+                solution+=1;
+
+                //UNCOMMENT FOR DEBUGGING
+                stable_results.add(new ArrayList<List<Integer>>(result));
+            }
+
+        }
 
 
 
@@ -71,39 +126,26 @@ public class Main {
     }
 
 
-    //create all possible permutations of N
-    public static List<List<Integer>> permute(int[] nums) {
-        List<List<Integer>> result = new ArrayList<>();
-        helper(0, nums, result);
-        return result;
-    }
-
-    private static void helper(int start, int[] nums, List<List<Integer>> result) {
-        if (start == nums.length - 1) {
-            ArrayList<Integer> list = new ArrayList<>();
-            for (int num : nums) {
-                list.add(num);
-            }
-            result.add(list);
+    private static void compute(Set<Integer> set, List<List<Integer>> currentResults, List<List<List<Integer>>> results)
+    {
+        if (set.size() < 2)
+        {
+            results.add(new ArrayList<List<Integer>>(currentResults));
             return;
         }
+        List<Integer> list = new ArrayList<Integer>(set);
+        Integer first = list.remove(0);
+        for (int i=0; i<list.size(); i++)
+        {
+            Integer second = list.get(i);
+            Set<Integer> nextSet = new LinkedHashSet<Integer>(list);
+            nextSet.remove(second);
 
-        for (int i = start; i < nums.length; i++) {
-            swap(nums, i, start);
-            helper(start + 1, nums, result);
-            swap(nums, i, start);
+            List<Integer> pair = Arrays.asList(first, second);
+            currentResults.add(pair);
+            compute(nextSet, currentResults, results);
+            currentResults.remove(pair);
         }
     }
 
-    private static void swap(int[] nums, int i, int j) {
-        int temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
-    }
-
-
-    //Method to solve the preferences array and return the amount of solutions
-    private static void checkSolution(List<List<Integer>> people_arr) {
-
-    }
 }
